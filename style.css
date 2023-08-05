@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Anek+Telugu&display=swap');
+
+body {
+	background-color: #42343C;
+	color: white;
+	font-family: 'Anek Telugu', sans-serif;
+	padding: 5px 5px;
+}
+
+button {
+	background-color: #cf3f82;
+	color: white;
+	border: none;
+	padding: 10px 14px;
+	font-size: 16px;
+	margin: 5px 5px;
+	cursor: pointer;
+}
+
+input[type=text], input[type=password] {
+	background-color: #6d5261;
+	color: white;
+  width: 200px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+}
+
+#post {
+	border-color: #8a2d59;
+	border: 3px solid;
+	padding: 8px 8px;
+}
+
+a:link, a:visited {
+	color: white;
+}
+  
+a:hover, a:active { 
+	color: grey;
+}
+
+#curs {
+	cursor: pointer;
+}
