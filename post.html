@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<head>
+<link rel="stylesheet" href="https://getsardonyx.cc/style.css">
+<link rel="icon" type="image/x-icon" href="https://app.getsardonyx.cc/favicon.ico">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anek+Telugu&display=swap');
+
+body {
+	background-color: #404040;
+	color: white;
+	font-family: 'Anek Telugu', sans-serif;
+}
+
+.post {
+	background-color: #505050;
+	border-color: #8a2d59;
+	border: 3px solid;
+	padding: 8px 8px;
+	margin: 8px 8vw;
+	border-radius: 5px;
+}
+
+#header {
+	width: 100%;
+	display: block;
+}
+
+.header {
+	width: 100%;
+	display: block;
+}
+
+a:link, a:visited {
+	color: white;
+}
+  
+a:hover, a:active { 
+	color: grey;
+}
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sardonyx</title>
+</head>
+<body>
+<div id="header"><center><img src='https://app.getsardonyx.cc/icon.png' alt='The Sardonyx logo' style='border-radius: 50%; height: 32px; width: 32px; vertical-align: middle;'> Sardonyx</center></div><br>
+<div id="scene"><center><h1>Loading...</h1></center></div>
+<script>
+// console.log(window.location.search);
+var a = location.href; 
+var b = a.substring(a.indexOf("?")+1);
+console.log(b);
+wsr = "wss://server.getsardonyx.cc" // change this to whatever the server url is
+const ws = new WebSocket(wsr)
+
+ws.addEventListener("open", (event) => {
+	console.log("Connected to server!")
+	ws.send(JSON.stringify({ask: "get_post", id: b}))
+});
+
+ws.addEventListener("message", (event) => {
+	console.log(event.data)
+	var resb = event.data
+	var isJSON = true
+	try {
+		var resu = JSON.parse(resb);
+	} catch (error) {
+		var isJSON = false
+		console.warn("Couldn't parse JSON, will exit: " + error)
+		document.getElementById("scene").innerHTML = "<center><h1>Something went wrong.</h1><h2>The post might not exist.</h2><small><a href='https://app.getsardonyx.cc'>Head to the app.</a></small></center>"
+	}
+	if (isJSON) {
+		loadPost(resu)
+		ws.close()
+	} else {
+		ws.close()
+	}
+});
+
+function loadPost(resf) {
+	console.log("Loading post " + resf["_id"])
+	tsr = resf["timestamp"]
+	tsra = tsr * 1000
+	tsrb = Math.trunc(tsra)
+	var ts = new Date();
+	ts.setTime(tsrb);
+	sts = ts.toLocaleString();
+
+	var post = document.createElement("div");
+	post.classList.add("post");
+
+	var postUsername = document.createElement("h2");
+	postUsername.innerText = resf["username"];
+	post.appendChild(postUsername);
+
+    var postDetails = document.createElement("small");
+    postDetails.innerHTML = `${sts} <b>·</b> ${resf["_id"]}`;
+    post.appendChild(postDetails);
+
+	var postContent = document.createElement("p");
+	postContent.innerText = resf["content"];
+	post.appendChild(postContent);
+	
+	var postLike = document.createElement("thethingy");
+	postLike.innerHTML = `<u>${resf["likes"].length} likes</u>`;
+	post.appendChild(postLike);
+
+	document.getElementById("scene").innerHTML = "<br><center><small>Like what you see? <a href='https://app.getsardonyx.cc'>Head to the app</a> to see more posts, or make your own.</small></center>"
+	document.getElementById("scene").insertBefore(post, document.getElementById("scene").firstChild);
+}
+</script>
+</body>
